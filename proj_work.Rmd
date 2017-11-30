@@ -8,11 +8,12 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(readxl)
 ```
 
 ```{r}
-GSSdata <- read_excel("~/243project/college_major_set_1/GSS.xls", n_max = 4513)
+library(readxl)
+GSS3 <- read_excel("~/243project/college_major_set_1/GSS3.xlsx")
+View(GSS3)
 ```
 
 

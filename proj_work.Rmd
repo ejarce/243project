@@ -12,7 +12,7 @@ library(readxl)
 ```
 
 ```{r}
-GSSdata <- read_excel("~/243project/college_major_set_1/GSS.xls")
+GSSdata <- read_excel("~/243project/college_major_set_1/GSS.xls", n_max = 4513)
 ```
 
 

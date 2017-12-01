@@ -130,9 +130,24 @@ GSS3 &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243project/ma
 <h3>Tidying the data</h3>
 <pre class="r"><code>library(dplyr)
 GSS3 &lt;- GSS3[-4513,]
+GSS3 &lt;- GSS3[!GSS3$DegreeField == &quot;Not applicable&quot;,]
 GSS3$IDnum &lt;- as.integer(GSS3$IDnum)
 GSS3 &lt;- GSS3 %&gt;%
-  mutate(IDnum = ifelse(GSSyear == 2014, IDnum + 1989, IDnum))</code></pre>
+  mutate(income = ifelse(income == &quot;$10000 - 14999&quot;, 1000, 
+         ifelse(income == &quot;$1000 to 2999&quot;, 1000,
+                ifelse(income == &quot;$15000 - 19999&quot;, 15000,
+                       ifelse(income == &quot;$20000 - 24999&quot;, 20000,
+                              ifelse(income == &quot;$25000 or more&quot;, 25000,
+                                     ifelse(income == &quot;$3000 to 3999&quot;, 3000,
+                                            ifelse(income == &quot;$4000 to 4999&quot;, 4000,
+          ifelse(income == &quot;$5000 to 5999&quot;, 5000,
+                 ifelse(income == &quot;$6000 to 6999&quot;, 6000,
+                        ifelse(income == &quot;$7000 to 7999&quot;, 7000,
+                               ifelse(income == &quot;$8000 to 9999&quot;, 8000,
+                                      ifelse(income == &quot;Lt $1000&quot;, 0, NA))))))))))))) %&gt;%
+  mutate(selfEmploy = ifelse(selfEmploy == &quot;Self-employed&quot;, 1, 0)) %&gt;%
+  mutate(GovOrPriv = ifelse(GovOrPriv == &quot;Government&quot;, &quot;Government&quot;,
+                            ifelse(GovOrPriv == &quot;Private&quot;, &quot;Private&quot;, NA)))</code></pre>
 </div>
 
 

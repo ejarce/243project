@@ -20,8 +20,23 @@ GSS3 <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/col
 ```{r}
 library(dplyr)
 GSS3 <- GSS3[-4513,]
+GSS3 <- GSS3[!GSS3$DegreeField == "Not applicable",]
 GSS3$IDnum <- as.integer(GSS3$IDnum)
 GSS3 <- GSS3 %>%
-  mutate(IDnum = ifelse(GSSyear == 2014, IDnum + 1989, IDnum))
+  mutate(income = ifelse(income == "$10000 - 14999", 1000, 
+         ifelse(income == "$1000 to 2999", 1000,
+                ifelse(income == "$15000 - 19999", 15000,
+                       ifelse(income == "$20000 - 24999", 20000,
+                              ifelse(income == "$25000 or more", 25000,
+                                     ifelse(income == "$3000 to 3999", 3000,
+                                            ifelse(income == "$4000 to 4999", 4000,
+          ifelse(income == "$5000 to 5999", 5000,
+                 ifelse(income == "$6000 to 6999", 6000,
+                        ifelse(income == "$7000 to 7999", 7000,
+                               ifelse(income == "$8000 to 9999", 8000,
+                                      ifelse(income == "Lt $1000", 0, NA))))))))))))) %>%
+  mutate(selfEmploy = ifelse(selfEmploy == "Self-employed", 1, 0)) %>%
+  mutate(GovOrPriv = ifelse(GovOrPriv == "Government", "Government",
+                            ifelse(GovOrPriv == "Private", "Private", NA)))
 ```
 

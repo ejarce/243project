@@ -126,6 +126,14 @@ $(document).ready(function () {
 
 <pre class="r"><code># Import the data
 GSS3 &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv&quot;)</code></pre>
+<div id="tidying-the-data" class="section level3">
+<h3>Tidying the data</h3>
+<pre class="r"><code>library(dplyr)
+GSS3 &lt;- GSS3[-4513,]
+GSS3$IDnum &lt;- as.integer(GSS3$IDnum)
+GSS3 &lt;- GSS3 %&gt;%
+  mutate(IDnum = ifelse(GSSyear == 2014, IDnum + 1989, IDnum))</code></pre>
+</div>
 
 
 

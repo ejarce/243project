@@ -15,4 +15,13 @@ library(tidyverse)
 GSS3 <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv")
 ```
 
+### Tidying the data
+
+```{r}
+library(dplyr)
+GSS3 <- GSS3[-4513,]
+GSS3$IDnum <- as.integer(GSS3$IDnum)
+GSS3 <- GSS3 %>%
+  mutate(IDnum = ifelse(GSSyear == 2014, IDnum + 1989, IDnum))
+```
 

@@ -125,7 +125,8 @@ $(document).ready(function () {
 
 
 <pre class="r"><code># Import the data
-GSS3 &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv&quot;)</code></pre>
+GSS3 &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv&quot;)
+prestige &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSSprestige.csv&quot;)</code></pre>
 <div id="tidying-the-data" class="section level3">
 <h3>Tidying the data</h3>
 <pre class="r"><code>library(dplyr)
@@ -151,7 +152,7 @@ GSS3 &lt;- GSS3 %&gt;%
   mutate(PlaceLived16 = ifelse(PlaceLived16 == &quot;Town lt 50000&quot;, 0,
                                ifelse(PlaceLived16 == &quot;50000 to 250000&quot;, 50000,
                                       ifelse(PlaceLived16 == &quot;City gt 250000&quot;, 250000,
-                                             ifelse(PlaceLived16 == &quot;Big-city suburb&quot;,&quot;Big-city suburb&quot;, NA )))))</code></pre>
+                                             ifelse(PlaceLived16 == &quot;Big-city suburb&quot;,&quot;Big-city suburb&quot;, NA)))))</code></pre>
 </div>
 
 

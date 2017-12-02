@@ -13,6 +13,7 @@ library(tidyverse)
 ```{r}
 # Import the data
 GSS3 <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv")
+prestige <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSSprestige.csv")
 ```
 
 ### Tidying the data
@@ -41,6 +42,6 @@ GSS3 <- GSS3 %>%
   mutate(PlaceLived16 = ifelse(PlaceLived16 == "Town lt 50000", 0,
                                ifelse(PlaceLived16 == "50000 to 250000", 50000,
                                       ifelse(PlaceLived16 == "City gt 250000", 250000,
-                                             ifelse(PlaceLived16 == "Big-city suburb","Big-city suburb", NA )))))
+                                             ifelse(PlaceLived16 == "Big-city suburb","Big-city suburb", NA)))))
 ```
 

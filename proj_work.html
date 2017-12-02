@@ -147,7 +147,11 @@ GSS3 &lt;- GSS3 %&gt;%
                                       ifelse(income == &quot;Lt $1000&quot;, 0, NA))))))))))))) %&gt;%
   mutate(selfEmploy = ifelse(selfEmploy == &quot;Self-employed&quot;, 1, 0)) %&gt;%
   mutate(GovOrPriv = ifelse(GovOrPriv == &quot;Government&quot;, &quot;Government&quot;,
-                            ifelse(GovOrPriv == &quot;Private&quot;, &quot;Private&quot;, NA)))</code></pre>
+                            ifelse(GovOrPriv == &quot;Private&quot;, &quot;Private&quot;, NA))) %&gt;%
+  mutate(PlaceLived16 = ifelse(PlaceLived16 == &quot;Town lt 50000&quot;, 0,
+                               ifelse(PlaceLived16 == &quot;50000 to 250000&quot;, 50000,
+                                      ifelse(PlaceLived16 == &quot;City gt 250000&quot;, 250000,
+                                             ifelse(PlaceLived16 == &quot;Big-city suburb&quot;,&quot;Big-city suburb&quot;, NA )))))</code></pre>
 </div>
 
 

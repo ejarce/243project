@@ -37,6 +37,10 @@ GSS3 <- GSS3 %>%
                                       ifelse(income == "Lt $1000", 0, NA))))))))))))) %>%
   mutate(selfEmploy = ifelse(selfEmploy == "Self-employed", 1, 0)) %>%
   mutate(GovOrPriv = ifelse(GovOrPriv == "Government", "Government",
-                            ifelse(GovOrPriv == "Private", "Private", NA)))
+                            ifelse(GovOrPriv == "Private", "Private", NA))) %>%
+  mutate(PlaceLived16 = ifelse(PlaceLived16 == "Town lt 50000", 0,
+                               ifelse(PlaceLived16 == "50000 to 250000", 50000,
+                                      ifelse(PlaceLived16 == "City gt 250000", 250000,
+                                             ifelse(PlaceLived16 == "Big-city suburb","Big-city suburb", NA )))))
 ```
 

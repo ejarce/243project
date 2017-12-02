@@ -130,9 +130,17 @@ prestige &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243projec
 <div id="tidying-the-data" class="section level3">
 <h3>Tidying the data</h3>
 <pre class="r"><code>library(dplyr)
+prestige &lt;- prestige[-c(4513,4514),]
+prestige &lt;- prestige %&gt;%
+  rename(IDnum = Idnum)
 GSS3 &lt;- GSS3[-4513,]
-GSS3 &lt;- GSS3[!GSS3$DegreeField == &quot;Not applicable&quot;,]
+GSS3 &lt;- distinct(GSS3)
 GSS3$IDnum &lt;- as.integer(GSS3$IDnum)
+GSS3$GSSyear &lt;- as.integer(GSS3$GSSyear)
+prestige$IDnum &lt;- as.integer(prestige$IDnum)
+prestige$GSSyear &lt;- as.integer(prestige$GSSyear)
+GSS3 &lt;- left_join(GSS3, prestige, by = c(&quot;IDnum&quot;, &quot;GSSyear&quot;))
+GSS3 &lt;- GSS3[!GSS3$DegreeField == &quot;Not applicable&quot;,]
 GSS3 &lt;- GSS3 %&gt;%
   mutate(income = ifelse(income == &quot;$10000 - 14999&quot;, 1000, 
          ifelse(income == &quot;$1000 to 2999&quot;, 1000,

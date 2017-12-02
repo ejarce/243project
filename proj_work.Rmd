@@ -20,9 +20,17 @@ prestige <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master
 
 ```{r}
 library(dplyr)
+prestige <- prestige[-c(4513,4514),]
+prestige <- prestige %>%
+  rename(IDnum = Idnum)
 GSS3 <- GSS3[-4513,]
-GSS3 <- GSS3[!GSS3$DegreeField == "Not applicable",]
+GSS3 <- distinct(GSS3)
 GSS3$IDnum <- as.integer(GSS3$IDnum)
+GSS3$GSSyear <- as.integer(GSS3$GSSyear)
+prestige$IDnum <- as.integer(prestige$IDnum)
+prestige$GSSyear <- as.integer(prestige$GSSyear)
+GSS3 <- left_join(GSS3, prestige, by = c("IDnum", "GSSyear"))
+GSS3 <- GSS3[!GSS3$DegreeField == "Not applicable",]
 GSS3 <- GSS3 %>%
   mutate(income = ifelse(income == "$10000 - 14999", 1000, 
          ifelse(income == "$1000 to 2999", 1000,

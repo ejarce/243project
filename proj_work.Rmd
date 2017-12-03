@@ -22,7 +22,8 @@ prestige <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master
 library(dplyr)
 prestige <- prestige[-c(4513,4514),]
 prestige <- prestige %>%
-  rename(IDnum = Idnum)
+  rename(IDnum = Idnum) %>%
+  select(1,2,4)
 GSS3 <- GSS3[-4513,]
 GSS3 <- distinct(GSS3)
 GSS3$IDnum <- as.integer(GSS3$IDnum)

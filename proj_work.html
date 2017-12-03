@@ -132,7 +132,8 @@ prestige &lt;- read.csv(&quot;https://raw.githubusercontent.com/ejarce/243projec
 <pre class="r"><code>library(dplyr)
 prestige &lt;- prestige[-c(4513,4514),]
 prestige &lt;- prestige %&gt;%
-  rename(IDnum = Idnum)
+  rename(IDnum = Idnum) %&gt;%
+  select(1,2,4)
 GSS3 &lt;- GSS3[-4513,]
 GSS3 &lt;- distinct(GSS3)
 GSS3$IDnum &lt;- as.integer(GSS3$IDnum)

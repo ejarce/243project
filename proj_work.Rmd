@@ -31,8 +31,22 @@ GSS3$GSSyear <- as.integer(GSS3$GSSyear)
 prestige$IDnum <- as.integer(prestige$IDnum)
 prestige$GSSyear <- as.integer(prestige$GSSyear)
 GSS3 <- left_join(GSS3, prestige, by = c("IDnum", "GSSyear"))
-GSS3 <- GSS3[!GSS3$DegreeField == "Not applicable",]
+GSS3[GSS3 == "Not applicable"] <- NA
+GSS3[GSS3 == "No answer"] <- NA
+GSS3$colltype <- ifelse(GSS3$colltype %in% c(
+  "Private for-profit, 2-year",
+  "Private for-profit, less-than 2-year",
+  "Private not-for-profit, 4-year or above",
+  "Private for-profit, 4-year or above",
+  "Private not-for-profit, 2-year or less"), "Private",
+  ifelse(GSS3$colltype %in% c(
+    "Public, 4-year or above",
+    "Public, 2-year"), "Public", "none"))
 GSS3 <- GSS3 %>%
+  mutate(racism = ifelse(racism == "Yes", "Yes",
+                         ifelse(racism == "No", "No", NA))) %>%
+  mutate(ageism = ifelse(ageism == c("Dont know", "No answer", "Not applicable"), NA,
+                         ifelse(ageism == "No", "No", "Yes"))) %>%
   mutate(income = ifelse(income == "$10000 - 14999", 1000, 
          ifelse(income == "$1000 to 2999", 1000,
                 ifelse(income == "$15000 - 19999", 15000,

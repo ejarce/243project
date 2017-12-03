@@ -141,8 +141,22 @@ GSS3$GSSyear &lt;- as.integer(GSS3$GSSyear)
 prestige$IDnum &lt;- as.integer(prestige$IDnum)
 prestige$GSSyear &lt;- as.integer(prestige$GSSyear)
 GSS3 &lt;- left_join(GSS3, prestige, by = c(&quot;IDnum&quot;, &quot;GSSyear&quot;))
-GSS3 &lt;- GSS3[!GSS3$DegreeField == &quot;Not applicable&quot;,]
+GSS3[GSS3 == &quot;Not applicable&quot;] &lt;- NA
+GSS3[GSS3 == &quot;No answer&quot;] &lt;- NA
+GSS3$colltype &lt;- ifelse(GSS3$colltype %in% c(
+  &quot;Private for-profit, 2-year&quot;,
+  &quot;Private for-profit, less-than 2-year&quot;,
+  &quot;Private not-for-profit, 4-year or above&quot;,
+  &quot;Private for-profit, 4-year or above&quot;,
+  &quot;Private not-for-profit, 2-year or less&quot;), &quot;Private&quot;,
+  ifelse(GSS3$colltype %in% c(
+    &quot;Public, 4-year or above&quot;,
+    &quot;Public, 2-year&quot;), &quot;Public&quot;, &quot;none&quot;))
 GSS3 &lt;- GSS3 %&gt;%
+  mutate(racism = ifelse(racism == &quot;Yes&quot;, &quot;Yes&quot;,
+                         ifelse(racism == &quot;No&quot;, &quot;No&quot;, NA))) %&gt;%
+  mutate(ageism = ifelse(ageism == c(&quot;Dont know&quot;, &quot;No answer&quot;, &quot;Not applicable&quot;), NA,
+                         ifelse(ageism == &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;))) %&gt;%
   mutate(income = ifelse(income == &quot;$10000 - 14999&quot;, 1000, 
          ifelse(income == &quot;$1000 to 2999&quot;, 1000,
                 ifelse(income == &quot;$15000 - 19999&quot;, 15000,

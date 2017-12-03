@@ -13,7 +13,7 @@ library(tidyverse)
 ```{r}
 # Import the data
 GSS3 <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSS3.csv")
-prestige <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSSprestige.csv")
+prestige <- read.csv("https://raw.githubusercontent.com/ejarce/243project/master/college_major_set_1/GSSprestige.csv") 
 ```
 
 ### Tidying the data
@@ -23,13 +23,16 @@ library(dplyr)
 prestige <- prestige[-c(4513,4514),]
 prestige <- prestige %>%
   rename(IDnum = Idnum) %>%
-  select(1,2,4)
+  dplyr::select(1,2,4)
 GSS3 <- GSS3[-4513,]
 GSS3 <- distinct(GSS3)
 GSS3$IDnum <- as.integer(GSS3$IDnum)
 GSS3$GSSyear <- as.integer(GSS3$GSSyear)
 prestige$IDnum <- as.integer(prestige$IDnum)
 prestige$GSSyear <- as.integer(prestige$GSSyear)
+GSS3$pctColleagueWdegree <- as.numeric(GSS3$pctColleagueWdegree)
+GSS3$hrsLastWk <- as.numeric(GSS3$hrsLastWk)
+GSS3$Age <- as.numeric(GSS3$Age)
 GSS3 <- left_join(GSS3, prestige, by = c("IDnum", "GSSyear"))
 GSS3[GSS3 == "Not applicable"] <- NA
 GSS3[GSS3 == "No answer"] <- NA
@@ -45,9 +48,11 @@ GSS3$colltype <- ifelse(GSS3$colltype %in% c(
 GSS3 <- GSS3 %>%
   mutate(racism = ifelse(racism == "Yes", "Yes",
                          ifelse(racism == "No", "No", NA))) %>%
+  mutate(BornHere = ifelse(BornHere == "Yes", 1,
+                           ifelse(BornHere == "No", 0, NA))) %>%
   mutate(ageism = ifelse(ageism == c("Dont know", "No answer", "Not applicable"), NA,
                          ifelse(ageism == "No", "No", "Yes"))) %>%
-  mutate(income = ifelse(income == "$10000 - 14999", 1000, 
+  mutate(income = ifelse(income == "$10000 - 14999", 10000, 
          ifelse(income == "$1000 to 2999", 1000,
                 ifelse(income == "$15000 - 19999", 15000,
                        ifelse(income == "$20000 - 24999", 20000,
@@ -66,5 +71,44 @@ GSS3 <- GSS3 %>%
                                ifelse(PlaceLived16 == "50000 to 250000", 50000,
                                       ifelse(PlaceLived16 == "City gt 250000", 250000,
                                              ifelse(PlaceLived16 == "Big-city suburb","Big-city suburb", NA)))))
+GSS3$ageism <- as.factor(GSS3$ageism)
+GSS3$racism <- as.factor(GSS3$racism)
+GSS3$colltype <- as.factor(GSS3$colltype)
+GSS4 <- drop_na(GSS3, DegreeField)
+```
+
+### Partitioning the data into test and train sets
+
+```{r}
+#Code example found at "https://stackoverflow.com/questions/17200114/how-to-split-data-into-training-testing-sets-using-sample-function"
+#setting the proportion of train to test data
+n <- floor(0.80 * nrow(GSS4))
+#setting a seed for randomization
+set.seed(674638)
+samp <- sample(seq_len(nrow(GSS4)), size = n)
+
+train <- GSS4[samp,]
+test <- GSS4[-samp,]
+```
+
+### LDA
+
+```{r}
+library(MASS)
+LDA1 <- lda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
+```
+
+
+### QDA
+
+```{r}
+
+QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
+```
+
+### SVM
+```{r}
+library(e1071)
+SVM <- svm(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
 ```
 

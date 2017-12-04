@@ -1,6 +1,6 @@
 ---
 title: "the work"
-author: "EJ Arce"
+author: "EJ Arce, Den Ivanov, Matthew Yancheff"
 date: "11/29/2017"
 output: html_document
 ---
@@ -100,19 +100,31 @@ GSS5$GovOrPriv <- as.factor(GSS5$GovOrPriv)
 GSS5$IndusCode <- as.factor(GSS5$IndusCode)
 ```
 
+```{r}
+GSS6 <- GSS5 %>%
+  mutate(STEM = ifelse(DegreeField %in% 
+                          c("Biological Sciences", "Engineering and Computer Science",
+                            "Mathematics", "Natural Resources & Environment", "Physical Sciences",
+                            "Pre-Health & Medicine"), "Yes", "No"))
+GSS6$STEM <- as.factor(GSS6$STEM)
+summary(GSS6$STEM)
+```
+
+
+
 
 ### Partitioning the data into test and train sets
 
 ```{r}
 #Code example found at "https://stackoverflow.com/questions/17200114/how-to-split-data-into-training-testing-sets-using-sample-function"
 #setting the proportion of train to test data
-n <- floor(0.80 * nrow(GSS5))
+n <- floor(0.80 * nrow(GSS6))
 #setting a seed for randomization
 set.seed(674638)
-samp <- sample(seq_len(nrow(GSS5)), size = n)
+samp <- sample(seq_len(nrow(GSS6)), size = n)
 
-train <- GSS5[samp,]
-test <- GSS5[-samp,]
+train <- GSS6[samp,]
+test <- GSS6[-samp,]
 ```
 
 ### LDA
@@ -126,13 +138,15 @@ LDA1 <- lda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
 ### QDA
 
 ```{r}
-QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = train)
+#QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = train)
 ```
 
 ### SVM
 ```{r}
 library(e1071)
-SVM <- svm(DegreeField ~ .-IDnum-GSSyear-X1, data = train)
+SVM <- svm(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train)
 summary(SVM)
-```
+ypred <- predict(SVM, test)
 
+table(predict = ypred, truth = test$STEM)
+```

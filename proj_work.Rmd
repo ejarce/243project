@@ -78,8 +78,26 @@ GSS4 <- drop_na(GSS3, DegreeField)
 write.csv(GSS4, file = "GSS4.csv")
 ```
 
-```{r}
 
+```{r}
+library(readr)
+GSS5 <- read_csv("~/243project/GSS4.csv")
+GSS5$sex <- as.factor(GSS5$sex)
+GSS5$race <- as.factor(GSS5$race)
+GSS5$maritalstatus <- as.factor(GSS5$maritalstatus)
+GSS5$PlaceLived16 <- as.factor(GSS5$PlaceLived16)
+GSS5$Region16 <- as.factor(GSS5$Region16)
+GSS5$BornHere <- as.factor(GSS5$BornHere)
+GSS5$ageism <- as.factor(GSS5$ageism)
+GSS5$racism <- as.factor(GSS5$racism)
+GSS5$HighestDegree <- as.factor(GSS5$HighestDegree)
+GSS5$DegreeField <- as.factor(GSS5$DegreeField)
+GSS5$baEarnRate <- as.factor(GSS5$baEarnRate)
+GSS5$collStudEnroll <- as.factor(GSS5$collStudEnroll)
+GSS5$colltype <- as.factor(GSS5$colltype)
+GSS5$jobstatus <- as.factor(GSS5$jobstatus)
+GSS5$GovOrPriv <- as.factor(GSS5$GovOrPriv)
+GSS5$IndusCode <- as.factor(GSS5$IndusCode)
 ```
 
 
@@ -88,13 +106,13 @@ write.csv(GSS4, file = "GSS4.csv")
 ```{r}
 #Code example found at "https://stackoverflow.com/questions/17200114/how-to-split-data-into-training-testing-sets-using-sample-function"
 #setting the proportion of train to test data
-n <- floor(0.80 * nrow(GSS4))
+n <- floor(0.80 * nrow(GSS5))
 #setting a seed for randomization
 set.seed(674638)
-samp <- sample(seq_len(nrow(GSS4)), size = n)
+samp <- sample(seq_len(nrow(GSS5)), size = n)
 
-train <- GSS4[samp,]
-test <- GSS4[-samp,]
+train <- GSS5[samp,]
+test <- GSS5[-samp,]
 ```
 
 ### LDA
@@ -108,13 +126,13 @@ LDA1 <- lda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
 ### QDA
 
 ```{r}
-
-QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
+QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = train)
 ```
 
 ### SVM
 ```{r}
 library(e1071)
-SVM <- svm(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
+SVM <- svm(DegreeField ~ .-IDnum-GSSyear-X1, data = train)
+summary(SVM)
 ```
 

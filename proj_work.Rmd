@@ -138,7 +138,7 @@ LDA1 <- lda(DegreeField ~ .-IDnum-GSSyear, data = GSS3)
 ### QDA
 
 ```{r}
-#QDA1 <- qda(DegreeField ~ .-IDnum-GSSyear, data = train)
+QDA1 <- qda(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train)
 ```
 
 ### SVM

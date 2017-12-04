@@ -75,7 +75,13 @@ GSS3$ageism <- as.factor(GSS3$ageism)
 GSS3$racism <- as.factor(GSS3$racism)
 GSS3$colltype <- as.factor(GSS3$colltype)
 GSS4 <- drop_na(GSS3, DegreeField)
+write.csv(GSS4, file = "GSS4.csv")
 ```
+
+```{r}
+
+```
+
 
 ### Partitioning the data into test and train sets
 

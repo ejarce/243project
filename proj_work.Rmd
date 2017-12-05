@@ -168,7 +168,9 @@ test <- GSS8[-samp,]
 ### SVM
 ```{r}
 library(e1071)
-SVM <- svm(STEM ~ .-IDnum-GSSyear-X1-DegreeField-collStudEnroll-racism-ageism-baEarnRate-prestige, data = train)
+SVM <- svm(STEM ~ ., data = GSS8)
+tune.out <- tune(svm, STEM~., data = GSS8, kernel = "radial", ranges = list(cost=c(0.1,1,10,100,1000),gamma=c(0.5,1,2,3,4)))
+summary(tune.out)
 summary(SVM)
 
 ```
@@ -179,7 +181,7 @@ summary(SVM)
 library(caTools)
 
 train2 <-drop_na(train)
-glm1 <- glm(STEM ~ .-X1-GSSyear-DegreeField-collStudEnroll-IndusCode-racism-ageism-prestige-baEarnRate, data = train, family = binomial)
+glm1 <- glm(STEM ~ ., data = train, family = binomial)
 summary(glm1)
 plot(glm1)
 

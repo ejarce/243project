@@ -1,0 +1,72 @@
+---
+title: "tree models"
+author: "EJ Arce"
+date: "12/2/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tree)
+```
+
+```{r}
+t1 <- tree(income~.,GSS4)
+svm(income ~ .-IDnum-GSSyear, data = GSS4)
+```
+
+```{r}
+glm<- glm(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train)
+```
+
+### Cross validations
+
+```{r}
+# run kfold cv
+tuned <- tune.svm(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train,
+                  tunecontrol = tune.control(cross=5))
+summary(tuned)
+```
+
+```{r}
+p <- tune.svm(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train,
+                   gamma = (.000001:20), cost = (.00001:100))
+plot(p)
+```
+
+```{r}
+library(ggplot2)
+plot1 <- ggplot(GSS6, aes(x = selfEmploy)) +
+  geom_bar(position = "fill", aes(col = STEM))
+plot1
+```
+
+```{r}
+GSS8 <- subset(GSS6, select = -c(ageism, racism, prestige,IDnum,X1,GSSyear,
+                                 IndusCode))
+GSS8 <- drop_na(GSS8)
+GSS8$STEM <- ifelse(GSS8$STEM == "Yes", 1, 0)
+GSS8$STEM <- as.factor(GSS8$STEM)
+train <- sample(1:nrow(GSS8), nrow(GSS8) * .75)
+```
+
+```{r}
+library(tree)
+library(gbm)
+t1 <- tree(STEM~.,GSS8)
+boost <- gbm(STEM~., data = GSS8[train,],
+             shrinkage = .1, interaction.depth = 1, n.trees = 50)
+```
+
+```{r}
+library(randomForest)
+
+set.seed(35)
+bag <- randomForest(STEM~., data = GSS8, type = classification,
+                    subset = train, importance = TRUE)
+summary(bag)
+```
+

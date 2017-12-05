@@ -114,7 +114,7 @@ summary(GSS6$STEM)
 
 ```{r}
 GSS8 <- subset(GSS4, select = -c(ageism, racism, prestige,IDnum,GSSyear,
-                                 IndusCode, collStudEnroll))
+                                 IndusCode, collStudEnroll, baEarnRate))
 GSS8 <- GSS8 %>%
   mutate(STEM =
            ifelse(

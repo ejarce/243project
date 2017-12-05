@@ -9,19 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-library(tree)
-```
-
-```{r}
-t1 <- tree(income~.,GSS4)
-svm(income ~ .-IDnum-GSSyear, data = GSS4)
-```
-
-```{r}
-glm<- glm(STEM ~ .-IDnum-GSSyear-X1-DegreeField, data = train)
-```
-
 ### Cross validations
 
 ```{r}
@@ -39,17 +26,46 @@ plot(p)
 
 ```{r}
 library(ggplot2)
-plot1 <- ggplot(GSS6, aes(x = selfEmploy)) +
-  geom_bar(position = "fill", aes(col = STEM))
+plot1 <- ggplot(GSS8, aes(x = STEM)) +
+  geom_bar(position = "fill", aes(col = sex))
 plot1
 ```
 
 ```{r}
-GSS8 <- subset(GSS6, select = -c(ageism, racism, prestige,IDnum,X1,GSSyear,
+GSS8 <- subset(GSS4, select = -c(ageism, racism, prestige,IDnum,GSSyear,
                                  IndusCode))
-GSS8 <- drop_na(GSS8)
-GSS8$STEM <- ifelse(GSS8$STEM == "Yes", 1, 0)
+GSS8 <- GSS8 %>%
+  mutate(STEM =
+           ifelse(
+             DegreeField %in% c(
+               "Agriculture",
+               "Allied health",
+               "Biology",
+               "Chemistry",
+               "Computer science",
+               "Electronics",
+               "Engineering",
+               "Environment science/studies",
+               "Food science/nutrition/culinary arts",
+               "Forestry",
+               "General sciences",
+               "Geology",
+               "Gerontology",
+               "HealthIndustry & techn",
+               "Information technology",
+               "Mathmatics",
+               "Medicine",
+               "Pharmacy",
+               "Physics",
+               "Psychology"
+             ), 1, 0
+           )
+  )
 GSS8$STEM <- as.factor(GSS8$STEM)
+GSS8$PlaceLived16 <- as.factor(GSS8$PlaceLived16)
+GSS8$GovOrPriv <- as.factor(GSS8$GovOrPriv)
+GSS8 <- subset(GSS8, select = -DegreeField)
+GSS8 <- drop_na(GSS8)
 train <- sample(1:nrow(GSS8), nrow(GSS8) * .75)
 ```
 
@@ -68,5 +84,15 @@ set.seed(35)
 bag <- randomForest(STEM~., data = GSS8, type = classification,
                     subset = train, importance = TRUE)
 summary(bag)
+```
+
+```{r}
+# svm
+svm1 <- svm(STEM ~ ., data = GSS8[train,])
+summary(svm1)
+
+tuned <- tune.svm(svm1, data = train,
+                  tunecontrol = tune.control(cross=5))
+summary(tuned)
 ```
 

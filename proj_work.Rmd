@@ -110,6 +110,44 @@ GSS6$STEM <- as.factor(GSS6$STEM)
 summary(GSS6$STEM)
 ```
 
+### Alternative dataset
+
+```{r}
+GSS8 <- subset(GSS4, select = -c(ageism, racism, prestige,IDnum,GSSyear,
+                                 IndusCode))
+GSS8 <- GSS8 %>%
+  mutate(STEM =
+           ifelse(
+             DegreeField %in% c(
+               "Agriculture",
+               "Allied health",
+               "Biology",
+               "Chemistry",
+               "Computer science",
+               "Electronics",
+               "Engineering",
+               "Environment science/studies",
+               "Food science/nutrition/culinary arts",
+               "Forestry",
+               "General sciences",
+               "Geology",
+               "Gerontology",
+               "HealthIndustry & techn",
+               "Information technology",
+               "Mathmatics",
+               "Medicine",
+               "Pharmacy",
+               "Physics",
+               "Psychology"
+             ), 1, 0
+           )
+  )
+GSS8$STEM <- as.factor(GSS8$STEM)
+GSS8$PlaceLived16 <- as.factor(GSS8$PlaceLived16)
+GSS8$GovOrPriv <- as.factor(GSS8$GovOrPriv)
+GSS8 <- subset(GSS8, select = -DegreeField)
+GSS8 <- drop_na(GSS8)
+```
 
 
 
@@ -118,14 +156,16 @@ summary(GSS6$STEM)
 ```{r}
 #Code example found at "https://stackoverflow.com/questions/17200114/how-to-split-data-into-training-testing-sets-using-sample-function"
 #setting the proportion of train to test data
-n <- floor(0.80 * nrow(GSS6))
+n <- floor(0.80 * nrow(GSS8))
 #setting a seed for randomization
 set.seed(674638)
-samp <- sample(seq_len(nrow(GSS6)), size = n)
+samp <- sample(seq_len(nrow(GSS8)), size = n)
 
-train <- GSS6[samp,]
-test <- GSS6[-samp,]
+train <- GSS8[samp,]
+test <- GSS8[-samp,]
 ```
+
+
 
 ### LDA
 
